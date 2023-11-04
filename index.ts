@@ -62,6 +62,7 @@ app.get('/analytics', async (req, res) => {
   });
 });
 
+// 방문 기록 api
 app.get('/hit', async (req, res) => {
   const userAgent = req.useragent;
 
@@ -71,7 +72,8 @@ app.get('/hit', async (req, res) => {
   }
 
   const ipAddress = requestIP.getClientIp(req);
-  const today = dayjs().format('YYYY-MM-DDTHH:mm:ss'); // 분 단위 체크
+  const today = dayjs().format('YYYY-MM-DD'); // 일 단위 체크
+  // const today = dayjs().format('YYYY-MM-DDTHH:mm:ss'); // 초 단위 체크(테스트용)
 
   const ipHash = crypto.createHash('md5').update(`${ipAddress}-${today}`).digest('hex');
   const ref = req.query.ref ? req.query.ref.toString() : undefined;
@@ -80,8 +82,7 @@ app.get('/hit', async (req, res) => {
 });
 
 
-
-// 초기 세팅 용
+// 초기 데이터 세팅 용
 app.get('/seeds', async (req, res) => {
   const entries = markdownSeeds.entries();
   for (let [index, seed] of entries) {
