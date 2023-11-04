@@ -1,11 +1,15 @@
 import { createClient } from 'redis';
 import showdown from 'showdown';
 import express from 'express';
+import useragent from 'express-useragent';
+import requestIP from 'request-ip';
+import dayjs from 'dayjs';
+import crypto from 'crypto';
 
 import { markdownSeeds } from './seeds.js';
+import { log } from './utils/log.js';
 
 const PORT = 8000;
-
 const client = await createClient()
   .on('error', err => {
     console.log(err);
@@ -16,9 +20,12 @@ const app = express();
 
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
+app.use(useragent.express());
 
 app.get('/', (req, res) => {
-  res.render('index');
+  res.render('index', {
+    referrer: req.headers.referrer || req.headers.referer,
+  });
 });
 
 app.get('/posts/:postId', async (req, res) => {
@@ -31,13 +38,36 @@ app.get('/posts/:postId', async (req, res) => {
 
   res.render('post', {
     postId: postId,
+    referrer: req.headers.referrer || req.headers.referer,
     content: html,
   });
 });
 
-app.get('/hit', (req, res) => {
-  console.log('Hello World');
+app.get('/analytics', async (req, res) => {
+  const visitCount = await client.get('visitCount') ?? '0';
+  res.render('analytics', {
+    visitCount: visitCount,
+  });
 });
+
+app.get('/hit', async (req, res) => {
+  const userAgent = req.useragent;
+
+  if (userAgent && userAgent.isBot) {
+    console.log('Bot traffic');
+    return;
+  }
+
+  const ipAddress = requestIP.getClientIp(req);
+  const today = dayjs().format('YYYY-MM-DDTHH:mm'); // 분 단위 체크
+
+  const ipHash = crypto.createHash('md5').update(`${ipAddress}-${today}`).digest('hex');
+  const ref = req.query.ref ? req.query.ref.toString() : undefined;
+
+  await log(client, ipHash, ref);
+});
+
+
 
 // 초기 세팅 용
 app.get('/seeds', async (req, res) => {
