@@ -1,4 +1,5 @@
 import { createClient } from 'redis';
+import showdown from 'showdown';
 import express from 'express';
 
 const PORT = 8000;
@@ -18,9 +19,16 @@ app.get('/', (req, res) => {
   res.render('index');
 });
 
-app.get('/posts/:postId', (req, res) => {
-  // console.log('id', req.params.postId);
-  res.render('post');
+app.get('/posts/:postId', async (req, res) => {
+  const content = await client.get('post:1');
+
+  let converter = new showdown.Converter();
+  let markdown = content;
+  let html = converter.makeHtml(markdown ?? '');
+
+  res.render('post', {
+    content: html,
+  });
 });
 
 app.get('/hit', (req, res) => {
