@@ -10,6 +10,8 @@ module.exports = {
       ],
       parserOptions: {
         project: './tsconfig.json', // tsconfig 파일 등록
+        tsconfigRootDir: __dirname,
+        sourceType: 'module',
       },
     },
   ],
