@@ -45,8 +45,20 @@ app.get('/posts/:postId', async (req, res) => {
 
 app.get('/analytics', async (req, res) => {
   const visitCount = await client.get('visitCount') ?? '0';
+  const refKeys = await client.keys('ref:*');
+
+  const refs: Array<{ url: string; count: string}> = [];
+
+  for (let key of refKeys) {
+    const url = key.split('ref:')[1] ?? '';
+    const count = await client.get(key) ?? '0';
+
+    refs.push({ url, count });
+  }
+
   res.render('analytics', {
-    visitCount: visitCount,
+    visitCount,
+    refs,
   });
 });
 
@@ -59,7 +71,7 @@ app.get('/hit', async (req, res) => {
   }
 
   const ipAddress = requestIP.getClientIp(req);
-  const today = dayjs().format('YYYY-MM-DDTHH:mm'); // 분 단위 체크
+  const today = dayjs().format('YYYY-MM-DDTHH:mm:ss'); // 분 단위 체크
 
   const ipHash = crypto.createHash('md5').update(`${ipAddress}-${today}`).digest('hex');
   const ref = req.query.ref ? req.query.ref.toString() : undefined;

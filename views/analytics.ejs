@@ -12,7 +12,9 @@
     <li>
       Referrer
       <ul>
-        <li>ddd</li>
+        <% for (let ref of refs ) { %>
+        <li><%= ref.url %>: <%= ref.count %></li>
+        <% } %>
       </ul>
     </li>
   </ul>
