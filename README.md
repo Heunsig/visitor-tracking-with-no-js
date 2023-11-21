@@ -25,4 +25,5 @@
 ### ENV
 |Key|Description|
 |-|-|
-|REDIS_URL(required)|Redis URL을 설정합니다. EX) 127.0.0.1:6379|
+|PORT(required)|PORT를 설정합니다. EX) 8000|
+|REDIS_URL(required)|Redis URL을 설정합니다. EX) redis://127.0.0.1:6379|
