@@ -9,7 +9,7 @@ import crypto from 'crypto';
 import { markdownSeeds } from './seeds.js';
 import { log } from './utils/log.js';
 
-const PORT = 8000;
+const PORT = process.env.PORT;
 const client = await createClient({
   url: process.env.REDIS_URL,
 })
