@@ -7,7 +7,7 @@
   "scripts": {
     "build": "rimraf dist && tsc",
     "start": "node dist/index.js",
-    "dev": "tsc-watch --noClear --onSuccess \"node ./dist/index.js\"",
+    "dev": "tsc-watch --noClear --onSuccess \"node --env-file=.env ./dist/index.js\"",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "keywords": [],
