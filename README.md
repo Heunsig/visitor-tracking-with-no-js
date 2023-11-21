@@ -21,3 +21,8 @@
     웹 브라우저에서 [http://localhost:8000/seeds](http://localhost:8000/seeds)에 접근하여 샘플 데이터를 설정합니다.
 5. Demo 실행  
     설정을 마친 후, 브라우저에서 [http://localhost:8000](http://localhost:8000)로 접속하여 데모를 실행합니다.
+
+### ENV
+|Key|Description|
+|-|-|
+|REDIS_URL(required)|Redis URL을 설정합니다. EX) 127.0.0.1:6379|

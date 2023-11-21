@@ -10,7 +10,9 @@ import { markdownSeeds } from './seeds.js';
 import { log } from './utils/log.js';
 
 const PORT = 8000;
-const client = await createClient()
+const client = await createClient({
+  url: process.env.REDIS_URL,
+})
   .on('error', err => {
     console.log(err);
   })
